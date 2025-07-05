@@ -1,0 +1,87 @@
+version: '3.9'
+
+services:
+
+  src:
+    container_name: auth_service
+    build: .
+    ports:
+      - '8000:8000'
+    volumes:
+      - .:/src
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - app-network
+    depends_on:
+      - db_auth
+      - kafka
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_app
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+  db_auth:
+    image: postgres:16.2
+    restart: always
+    ports:
+      - '5432:5432'
+    env_file:
+      - .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  zookeeper:
+    image: 'bitnami/zookeeper:3.7.0'
+    container_name: zookeeper
+    ports:
+      - '2181:2181'
+    environment:
+      - .env
+    volumes:
+      - ./bitnami/zookeeper:/bitnami/zookeeper
+    networks:
+      - app-network
+
+  kafka:
+    image: 'bitnami/kafka:2.8.0'
+    container_name: kafka
+    ports:
+      - "9093:9093"
+    expose:
+      - "9093"
+    environment:
+      - .env
+    depends_on:
+      - zookeeper
+    volumes:
+      - ./bitnami/kafka:/bitnami/kafka
+    networks:
+      - app-network
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    container_name: kafdrop
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:9092"
+      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+    depends_on:
+      - kafka
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true
+
+volumes:
+  pgdata:
