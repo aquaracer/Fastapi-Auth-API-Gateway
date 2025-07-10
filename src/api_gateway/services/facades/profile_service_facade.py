@@ -27,7 +27,10 @@ class UserProfileServiceFacade:
         )
 
     async def get_user_profiles(
-        self, radius: int, min_age: int, max_age: int
+            self,
+            radius: int,
+            min_age: int,
+            max_age: int
     ) -> (json, int):
         return await self.external_service_facade.proxy_get(
             endpoint=self.settings.PROFILE_MICROSERVICE_USER_PROFILE_LIST_ENDPOINT,
