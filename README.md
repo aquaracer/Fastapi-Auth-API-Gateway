@@ -31,14 +31,15 @@
 
 ---
 
-## Архитектура
+## 🛠️ Технологический стек
 
-- **FastAPI** — основной web-фреймворк
-- **PostgreSQL** — база данных пользователей
-- **Kafka** — брокер событий для асинхронных операций
-- **Docker** и **docker-compose** — контейнеризация
-- **Nginx** — обратный прокси (опционально)
-- **Alembic** — миграции схемы БД
+- **Фреймворк**: FastAPI
+- **База данных**: PostgreSQL
+- **ORM**: SQLAlchemy
+- **Миграции**: Alembic
+- **Контейнеризация**: Docker
+- **Документация API**: Swagger UI
+- **Управление пакетами**: Poetry
 
 <details>
 <summary>Архитектурная схема (текст)</summary>
@@ -61,88 +62,36 @@
 
 ## Быстрый старт
 
-### 1. Клонируйте репозиторий
+### Развертывание с помощью Docker
+
+1. Создайте папку с проектом и склонируйте репозиторий:
 
 ```bash
-git clone <your-repo-url>
-cd auth_service
+mkdir Auth-API-Gateway
+cd Auth-API-Gateway
+git clone https://github.com/aquaracer/Fastapi-Auth-API-Gateway.git
 ```
 
-### 2. Настройте переменные окружения
+2. Настройте переменные окружения в файле .env.
 
-Создайте файл `.env` в корне проекта (см. пример ниже).
-
-<details>
-<summary>Пример .env</summary>
-
-```
-PROJECT_NAME=Auth Service
-VERSION=0.1.0
-DEBUG=True
-CORS_ALLOWED_ORIGINS=*
-
-POSTGRES_HOST=db_auth
-POSTGRES_PORT=5432
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=yourpassword
-POSTGRES_DRIVER=postgresql+asyncpg
-POSTGRES_DB=auth_service
-
-JWT_SECRET_KEY=your_jwt_secret
-JWT_ENCODE_ALGORITHM=HS256
-
-GOOGLE_CLIENT_ID=...
-GOOGLE_SECRET_KEY=...
-GOOGLE_REDIRECT_URI=...
-GOOGLE_TOKEN_URL=...
-GOOGLE_USER_INFO_URL=...
-
-YANDEX_CLIENT_ID=...
-YANDEX_SECRET_KEY=...
-YANDEX_REDIRECT_URI=...
-YANDEX_TOKEN_URL=...
-YANDEX_USER_INFO_URL=...
-
-PROFILE_MICROSERVICE_BASE_URL=...
-PROFILE_MICROSERVICE_USER_PROFILE_ENDPOINT=...
-PROFILE_MICROSERVICE_USER_PROFILE_LIST_ENDPOINT=...
-
-PHOTO_MICROSERVICE_BASE_URL=...
-PHOTO_MICROSERVICE_PHOTO_ENDPOINT=...
-PHOTO_MICROSERVICE_LIST_OWN_PHOTOS_ENDPOINT=...
-PHOTO_MICROSERVICE_LIST_USERS_PHOTOS_ENDPOINT=...
-
-SWIPE_MICROSERVICE_BASE_URL=...
-PROCESS_SWIPES_TOPIC=process_swipes_topic
-EVENT_TYPE_PROCESS_SWIPES=process_swipes
-KAFKA_BROKER_ADDRESS=kafka:9093
-```
-</details>
-
-### 3. Запуск через Docker Compose
+3. Соберите и запустите контейнеры:
 
 ```bash
 docker-compose up --build
 ```
-- Приложение: [http://localhost:8000](http://localhost:8000)
-- Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-### 4. Локальный запуск (без Docker)
+4. Примените миграции базы данных:
 
 ```bash
-pip install poetry
-poetry install
-poetry run uvicorn main:app --reload
+docker exec -it auth-api-gateway bash
+poetry run alembic upgrade head
 ```
 
-### 5. Миграции базы данных
+Приложение будет доступно по следующим адресам:
 
-```bash
-make migrate-create MIGRATION="your_message"
-make migrate-apply
-```
-
----
+- API: `http://localhost:8000`
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
 
 ## Основные эндпоинты
 
@@ -164,76 +113,4 @@ make migrate-apply
 | DELETE| /photo/{photo_id} | Удалить фото |
 | POST  | /swipes/process_swipes | Отправить событие свайпа (Kafka) |
 
----
 
-## Технологии
-
-- Python 3.12
-- FastAPI
-- SQLAlchemy
-- Alembic
-- PostgreSQL
-- Kafka (aiokafka)
-- Docker, docker-compose
-- Poetry
-
----
-
-## Разработка и тестирование
-
-- Форматирование: `black`, `isort`
-- Линтинг: `ruff`
-- Тесты рекомендуется размещать в папке `tests/`
-
----
-
-## Контакты
-
-Автор: Boris Averin  
-Email: 89068157313@mail.ru
-
----
-
-# English version
-
-## Description
-
-**API Gateway Auth Service** is a central API Gateway for authentication, user management, and proxying requests to profile, photo, and swipe microservices. Built with FastAPI, supports OAuth (Google, Yandex), JWT, Kafka, and PostgreSQL.
-
-## Features
-
-- Single entry point for client apps (API Gateway)
-- Authentication via Google, Yandex, and username/password
-- JWT authentication
-- Proxying requests to profile, photo, swipe microservices
-- Kafka integration for swipe events
-- Swagger/OpenAPI documentation
-- DB migrations via Alembic
-
-## Quick Start
-
-1. Clone the repo and create a `.env` file (see example above)
-2. Run with Docker Compose:
-    ```bash
-    docker-compose up --build
-    ```
-3. Or run locally:
-    ```bash
-    poetry install
-    poetry run uvicorn main:app --reload
-    ```
-4. Run DB migrations:
-    ```bash
-    make migrate-create MIGRATION="your_message"
-    make migrate-apply
-    ```
-
-## Main Endpoints
-
-See the table above.
-
-## Technologies
-
-- Python 3.12, FastAPI, SQLAlchemy, Alembic, PostgreSQL, Kafka, Docker, Poetry
-
----
