@@ -7,9 +7,13 @@ from fastapi import Depends, HTTPException, Security, security
 from jose import JWTError, jwt
 
 from src.api_gateway.adapters.producers.kafka_producer import BrokerProducer
-from src.api_gateway.services.facades.external_facade_service import ExternalServiceFacade
+from src.api_gateway.services.facades.external_facade_service import (
+    ExternalServiceFacade,
+)
 from src.api_gateway.services.facades.photo_service_facade import PhotoServiceFacade
-from src.api_gateway.services.facades.profile_service_facade import UserProfileServiceFacade
+from src.api_gateway.services.facades.profile_service_facade import (
+    UserProfileServiceFacade,
+)
 from src.api_gateway.services.facades.swipe_facade_service import SwipeFacadeService
 from src.config.project_config import Settings
 from src.users.dependencies.user_dependency import get_async_client, reusable_oauth2
@@ -17,7 +21,9 @@ from src.users.dependencies.user_dependency import get_async_client, reusable_oa
 event_loop = asyncio.get_event_loop()
 
 
-async def get_access_token(token: security.http.HTTPAuthorizationCredentials = Security(reusable_oauth2), ):
+async def get_access_token(
+        token: security.http.HTTPAuthorizationCredentials = Security(reusable_oauth2),
+) -> str:
     settings = Settings()
 
     try:
@@ -26,8 +32,11 @@ async def get_access_token(token: security.http.HTTPAuthorizationCredentials = S
             settings.JWT_SECRET_KEY,
             algorithms=[settings.JWT_ENCODE_ALGORITHM],
         )
-    except JWTError as error:
-        raise HTTPException(status_code=401, detail="Token is not correct")
+    except JWTError:
+        raise HTTPException(
+            status_code=401,
+            detail="Token is not correct"
+        ) from JWTError
 
     if payload["expire"] < dt.datetime.utcnow().timestamp():
         raise HTTPException(status_code=401, detail="Token has expired")
@@ -45,13 +54,18 @@ async def get_external_service_facade(
 async def get_broker_producer() -> BrokerProducer:
     settings = Settings()
     return BrokerProducer(
-        producer=AIOKafkaProducer(bootstrap_servers=settings.KAFKA_BROKER_ADDRESS, loop=event_loop),
+        producer=AIOKafkaProducer(
+            bootstrap_servers=settings.KAFKA_BROKER_ADDRESS,
+            loop=event_loop
+        ),
         process_swipes_topic=settings.PROCESS_SWIPES_TOPIC,
     )
 
 
 async def get_swipe_facade_service(
-        external_service_facade: ExternalServiceFacade = Depends(get_external_service_facade),
+        external_service_facade: ExternalServiceFacade = Depends(
+            get_external_service_facade
+        ),
         broker_producer: BrokerProducer = Depends(get_broker_producer),
 ) -> SwipeFacadeService:
     return SwipeFacadeService(

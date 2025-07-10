@@ -3,12 +3,16 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from starlette.responses import JSONResponse
 
-from src.api_gateway.dependencies.api_gateway_dependency import \
-    get_user_profile_service_facade
+from src.api_gateway.dependencies.api_gateway_dependency import (
+    get_user_profile_service_facade,
+)
 from src.api_gateway.schemas.microservice_profiles_schema import (
-    UserProfileCreateSchema, UserProfileUpdateSchema)
-from src.api_gateway.services.facades.profile_service_facade import \
-    UserProfileServiceFacade
+    UserProfileCreateSchema,
+    UserProfileUpdateSchema,
+)
+from src.api_gateway.services.facades.profile_service_facade import (
+    UserProfileServiceFacade,
+)
 
 router = APIRouter(prefix="/user_profile", tags=["user_profile"])
 

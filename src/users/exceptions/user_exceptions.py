@@ -1,18 +1,18 @@
-class UserNotFoundException(Exception):
+class UserNotFoundExceptionError(Exception):
     details = "User not found"
 
 
-class UserNotCorrectPasswordException(Exception):
+class UserNotCorrectPasswordExceptionError(Exception):
     details = "Password is not correct"
 
 
-class TokenExpired(Exception):
+class TokenExpiredError(Exception):
     detail = "Token has expired"
 
 
-class TokenNotCorrect(Exception):
+class TokenNotCorrectError(Exception):
     detail = "Token is not correct"
 
 
-class TaskNotFound(Exception):
+class TaskNotFoundError(Exception):
     detail = "Task not found"

@@ -35,13 +35,23 @@ class Settings(BaseSettings):
     YANDEX_USER_INFO_URL: str = os.getenv("YANDEX_USER_INFO_URL")
 
     PROFILE_MICROSERVICE_BASE_URL: str = os.getenv("PROFILE_MICROSERVICE_BASE_URL")
-    PROFILE_MICROSERVICE_USER_PROFILE_ENDPOINT: str = os.getenv("PROFILE_MICROSERVICE_USER_PROFILE_ENDPOINT")
-    PROFILE_MICROSERVICE_USER_PROFILE_LIST_ENDPOINT: str = os.getenv("PROFILE_MICROSERVICE_USER_PROFILE_LIST_ENDPOINT")
+    PROFILE_MICROSERVICE_USER_PROFILE_ENDPOINT: str = os.getenv(
+        "PROFILE_MICROSERVICE_USER_PROFILE_ENDPOINT"
+    )
+    PROFILE_MICROSERVICE_USER_PROFILE_LIST_ENDPOINT: str = os.getenv(
+        "PROFILE_MICROSERVICE_USER_PROFILE_LIST_ENDPOINT"
+    )
 
     PHOTO_MICROSERVICE_BASE_URL: str = os.getenv("PHOTO_MICROSERVICE_BASE_URL")
-    PHOTO_MICROSERVICE_PHOTO_ENDPOINT: str = os.getenv("PHOTO_MICROSERVICE_PHOTO_ENDPOINT")
-    PHOTO_MICROSERVICE_LIST_OWN_PHOTOS_ENDPOINT: str = os.getenv("PHOTO_MICROSERVICE_LIST_OWN_PHOTOS_ENDPOINT")
-    PHOTO_MICROSERVICE_LIST_USERS_PHOTOS_ENDPOINT: str = os.getenv("PHOTO_MICROSERVICE_LIST_USERS_PHOTOS_ENDPOINT")
+    PHOTO_MICROSERVICE_PHOTO_ENDPOINT: str = os.getenv(
+        "PHOTO_MICROSERVICE_PHOTO_ENDPOINT"
+    )
+    PHOTO_MICROSERVICE_LIST_OWN_PHOTOS_ENDPOINT: str = os.getenv(
+        "PHOTO_MICROSERVICE_LIST_OWN_PHOTOS_ENDPOINT"
+    )
+    PHOTO_MICROSERVICE_LIST_USERS_PHOTOS_ENDPOINT: str = os.getenv(
+        "PHOTO_MICROSERVICE_LIST_USERS_PHOTOS_ENDPOINT"
+    )
 
     SWIPE_MICROSERVICE_BASE_URL: str = os.getenv("SWIPE_MICROSERVICE_BASE_URL")
     PROCESS_SWIPES_TOPIC: str = os.getenv("PROCESS_SWIPES_TOPIC")
@@ -50,12 +60,23 @@ class Settings(BaseSettings):
 
     @property
     def db_url(self):
-        return f"{self.DB_DRIVER}://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        return (
+            f"{self.DB_DRIVER}://{self.DB_USER}:{self.DB_PASSWORD}"
+            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        )
 
     @property
     def google_redirect_url(self):
-        return f"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={self.GOOGLE_CLIENT_ID}&redirect_uri={self.GOOGLE_REDIRECT_URI}&scope=openid%20profile%20email&access_type=offline"
+        return (
+            f"https://accounts.google.com/o/oauth2/auth?response_type=code"
+            f"&client_id={self.GOOGLE_CLIENT_ID}"
+            f"&redirect_uri={self.GOOGLE_REDIRECT_URI}"
+            f"&scope=openid%20profile%20email&access_type=offline"
+        )
 
     @property
     def yandex_redirect_url(self) -> str:
-        return f"https://oauth.yandex.ru/authorize?response_type=code&client_id={self.YANDEX_CLIENT_ID}&force_confirm=yes"
+        return (
+            f"https://oauth.yandex.ru/authorize?response_type=code&client_id"
+            f"={self.YANDEX_CLIENT_ID}&force_confirm=yes"
+        )

@@ -9,8 +9,11 @@ from src.models.user_model import User
 from src.users.auth_clients import YandexClient
 from src.users.auth_clients.google_client import GoogleClient
 from src.users.exceptions.user_exceptions import (
-    TokenExpired, TokenNotCorrect, UserNotCorrectPasswordException,
-    UserNotFoundException)
+    TokenExpiredError,
+    TokenNotCorrectError,
+    UserNotCorrectPasswordExceptionError,
+    UserNotFoundExceptionError,
+)
 from src.users.repositories.user_repository import UserRepository
 from src.users.schemas.user_schema import UserCreateSchema, UserLoginSchema
 
@@ -71,9 +74,9 @@ class AuthService:
     @staticmethod
     def _validate_auth_user(user: User, password: str):
         if not user:
-            raise UserNotFoundException
+            raise UserNotFoundExceptionError
         if user.password != password:
-            raise UserNotCorrectPasswordException
+            raise UserNotCorrectPasswordExceptionError
 
     def generate_access_token(self, user_id: str):
         payload = {
@@ -94,8 +97,8 @@ class AuthService:
                 self.settings.JWT_SECRET_KEY,
                 algorithms=[self.settings.JWT_ENCODE_ALGORITHM],
             )
-        except JWTError:
-            raise TokenNotCorrect
+        except JWTError as error:
+            raise TokenNotCorrectError from error
         if payload.get("expire") < dt.datetime.utcnow().timestamp():
-            raise TokenExpired
+            raise TokenExpiredError
         return payload.get("user_id")

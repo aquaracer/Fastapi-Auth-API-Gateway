@@ -1,6 +1,6 @@
 import json
 from dataclasses import dataclass
-from typing import Any, List
+from typing import Any
 
 import httpx
 from fastapi import UploadFile
@@ -30,7 +30,7 @@ class ExternalServiceFacade:
             endpoint: str,
             data: Any,
             base_url: str,
-            files: List[UploadFile] | None = None,
+            files: list[UploadFile] | None = None,
     ) -> (json, int):
         async with self.async_client as client:
             files_data = None

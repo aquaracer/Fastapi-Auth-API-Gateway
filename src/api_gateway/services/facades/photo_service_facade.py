@@ -1,11 +1,11 @@
 import json
 from dataclasses import dataclass
-from typing import List
 
 from fastapi import UploadFile
 
-from src.api_gateway.services.facades.external_facade_service import \
-    ExternalServiceFacade
+from src.api_gateway.services.facades.external_facade_service import (
+    ExternalServiceFacade,
+)
 from src.config.project_config import Settings
 
 
@@ -14,7 +14,7 @@ class PhotoServiceFacade:
     external_service_facade: ExternalServiceFacade
     settings: Settings
 
-    async def upload_photos(self, files: List[UploadFile]) -> (json, int):
+    async def upload_photos(self, files: list[UploadFile]) -> (json, int):
         return await self.external_service_facade.proxy_post(
             endpoint=self.settings.PHOTO_MICROSERVICE_PHOTO_ENDPOINT,
             data={},
@@ -28,10 +28,13 @@ class PhotoServiceFacade:
             base_url=self.settings.PHOTO_MICROSERVICE_BASE_URL,
         )
 
-    async def get_users_photos(self, user_ids: List[int]) -> (json, int):
+    async def get_users_photos(self, user_ids: list[int]) -> (json, int):
         custom_query_params = "&".join([f"user_ids={x}" for x in user_ids])
         return await self.external_service_facade.proxy_get(
-            endpoint=f"{self.settings.PHOTO_MICROSERVICE_LIST_USERS_PHOTOS_ENDPOINT}{custom_query_params}",
+            endpoint=(
+                f"{self.settings.PHOTO_MICROSERVICE_LIST_USERS_PHOTOS_ENDPOINT}"
+                f"{custom_query_params}"
+            ),
             base_url=self.settings.PHOTO_MICROSERVICE_BASE_URL,
         )
 

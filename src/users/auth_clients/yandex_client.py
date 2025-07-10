@@ -16,8 +16,10 @@ class YandexClient:
     async def get_user_info(self, code: str) -> YandexUserData:
         """
         Получение информации о юзере из Яндекса в 2 этапа
-        1. Отправляем POST-запрос для получения yandex_access_token (не путать с access token системы)
-        2. Отправляем GET-запрос с yandex_access_token для получение информации о пользователе
+        1. Отправляем POST-запрос для получения yandex_access_token
+        (не путать с access token системы)
+        2. Отправляем GET-запрос с yandex_access_token для получение
+        информации о пользователе
         """
 
         async with self.async_client as client:
@@ -40,19 +42,19 @@ class YandexClient:
                 raise HTTPException(
                     status_code=400,
                     detail=f"HTTP error getting Yandex access token: {error}",
-                )
+                ) from error
 
             except json.JSONDecodeError as error:
                 raise HTTPException(
                     status_code=400,
                     detail=f"JSON decoding error getting Yandex access token: {error}",
-                )
+                ) from error
 
             except KeyError as error:
                 raise HTTPException(
                     status_code=400,
                     detail=f"Missing key in access token response: {error}",
-                )
+                ) from error
 
             try:
                 user_info_response = await client.get(
@@ -67,14 +69,14 @@ class YandexClient:
                 raise HTTPException(
                     status_code=400,
                     detail=f"HTTP error getting user info from Yandex: {error}",
-                )
+                ) from error
             except json.JSONDecodeError as error:
                 raise HTTPException(
                     status_code=400,
-                    detail=f"JSON decoding error getting user info from Yandex: {error}",
-                )
+                    detail=f"JSON decoding error getting user info from Yandex:{error}",
+                ) from error
             except Exception as error:
                 raise HTTPException(
                     status_code=400,
                     detail=f"Unexpected error getting user info: {error}",
-                )
+                ) from error

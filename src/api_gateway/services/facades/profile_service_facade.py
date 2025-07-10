@@ -2,9 +2,12 @@ import json
 from dataclasses import dataclass
 
 from src.api_gateway.schemas.microservice_profiles_schema import (
-    UserProfileCreateSchema, UserProfileUpdateSchema)
-from src.api_gateway.services.facades.external_facade_service import \
-    ExternalServiceFacade
+    UserProfileCreateSchema,
+    UserProfileUpdateSchema,
+)
+from src.api_gateway.services.facades.external_facade_service import (
+    ExternalServiceFacade,
+)
 from src.config.project_config import Settings
 
 

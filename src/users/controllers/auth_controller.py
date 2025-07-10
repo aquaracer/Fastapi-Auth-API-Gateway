@@ -5,7 +5,9 @@ from fastapi.responses import RedirectResponse
 
 from src.users.dependencies.user_dependency import get_auth_service
 from src.users.exceptions.user_exceptions import (
-    UserNotCorrectPasswordException, UserNotFoundException)
+    UserNotCorrectPasswordExceptionError,
+    UserNotFoundExceptionError,
+)
 from src.users.schemas.user_schema import UserCreateSchema, UserLoginSchema
 from src.users.services.auth_service import AuthService
 
@@ -20,11 +22,11 @@ async def login(
     try:
         return await auth_service.login(body.username, body.password)
 
-    except UserNotFoundException as error:
-        raise HTTPException(status_code=404, detail=error.details)
+    except UserNotFoundExceptionError as error:
+        raise HTTPException(status_code=404, detail=error.details) from error
 
-    except UserNotCorrectPasswordException as error:
-        raise HTTPException(status_code=401, detail=error.details)
+    except UserNotCorrectPasswordExceptionError as error:
+        raise HTTPException(status_code=401, detail=error.details) from error
 
 
 @router.get("/login/google", response_class=RedirectResponse)
